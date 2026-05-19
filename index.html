@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adrit Panday</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: #0e0e0e;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      padding: 26px 44px;
+    }
+
+    .logo {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1.5px solid rgba(255,255,255,0.85);
+      padding: 6px 11px;
+      line-height: 1;
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+    .menu-btn:hover { opacity: 0.6; }
+
+    .hamburger { display: flex; flex-direction: column; gap: 4.5px; }
+    .hamburger span { display: block; width: 21px; height: 1.5px; background: #fff; }
+
+    .nav-right { display: flex; justify-content: flex-end; }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      background: #E8440A;
+      color: #fff;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 13px 17px;
+      transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+    .nav-cta .plus {
+      background: rgba(0,0,0,0.22);
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px; font-weight: 300;
+      margin-left: 13px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      width: 100vw; height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* left text */
+    .hero-left {
+      position: absolute;
+      left: 0; top: 0;
+      width: 43%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 40px 80px 72px;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: clamp(50px, 6vw, 92px);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 26px;
+    }
+
+    .hero-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.42);
+      max-width: 320px;
+      line-height: 1.72;
+      margin-bottom: 44px;
+    }
+
+    .ctas {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .btn-orange {
+      display: inline-flex;
+      align-items: center;
+      background: #E8440A;
+      color: #fff;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 14px 17px;
+      transition: opacity 0.15s;
+    }
+    .btn-orange:hover { opacity: 0.88; }
+    .btn-orange .plus {
+      background: rgba(0,0,0,0.22);
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 300;
+      margin-left: 12px;
+    }
+
+    .btn-link {
+      font-size: 13px;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.32);
+      padding-bottom: 2px;
+      transition: border-color 0.15s;
+    }
+    .btn-link:hover { border-color: rgba(255,255,255,0.8); }
+
+    /* right portrait canvas */
+    .hero-right {
+      position: absolute;
+      right: 0; top: 0;
+      width: 58%;
+      height: 100%;
+    }
+
+    #ascii-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      /* canvas internal coords set by JS; CSS stretches it to fill the container */
+    }
+
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .bottom-label {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      max-width: 200px;
+      line-height: 1.65;
+    }
+
+    .tech-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .tech-item {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.04em;
+    }
+
+    .tech-more {
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div><div class="logo">AP</div></div>
+  <button class="menu-btn">
+    MENU
+    <div class="hamburger"><span></span><span></span></div>
+  </button>
+  <div class="nav-right">
+    <a href="mailto:adrit.panday@mail.utoronto.ca" class="nav-cta">
+      Let's work together<span class="plus">+</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="hero-left">
+    <h1>Computer<br>Science<br>Engineer.</h1>
+    <p class="hero-desc">
+      Adrit Panday is a CS Specialist at the University of Toronto Scarborough, building at the intersection of machine learning, systems programming, and robotics.
+    </p>
+    <div class="ctas">
+      <a href="#" class="btn-orange">View my work<span class="plus">+</span></a>
+      <a href="mailto:adrit.panday@mail.utoronto.ca" class="btn-link">Get in touch</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <canvas id="ascii-canvas"></canvas>
+  </div>
+
+</section>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-label">Computer Science Specialist<br>University of Toronto Scarborough</div>
+  <div class="tech-row">
+    <span class="tech-item">Python</span>
+    <span class="tech-item">PyTorch</span>
+    <span class="tech-item">C / C++</span>
+    <span class="tech-item">Next.js</span>
+    <span class="tech-item">Docker</span>
+    <span class="tech-more">+ many more</span>
+  </div>
+</div>
+
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  ASCII PORTRAIT RENDERER  v3
+//  Fixes: tight face crop, dynamic brightness, rich char set
+// ─────────────────────────────────────────────────────────────────────────────
+
+const IMG_PATH = 'portrait/image.png';
+
+// Cell size — larger = fewer chars = each one pops more (low-res look)
+const CELL_W  = 9;
+const CELL_H  = 13;
+const FONT_PX = 10;
+
+// Tight crop rectangle (fractions of image dimensions).
+// Cuts the excess dark background so the face fills the canvas.
+const CROP = { left: 0.18, right: 0.84, top: 0.0, bottom: 0.95 };
+
+// Pixels darker than MIN_BRI are invisible (bg / dark clothing).
+const MIN_BRI = 0.09;
+
+// Hover glow radius in canvas pixels
+const HOVER_R = 120;
+
+// Rich character set: letters + numbers + symbols for visual texture
+const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+              '0123456789@#$%&*!?+=~^:;.,<>[]{}()|/-\\`\'';
+
+// Colours: dim orange for shadows, full #E8440A for highlights
+const C_DIM  = [65,  14,  0];
+const C_FULL = [232, 68, 10];
+const C_GLOW = [255, 245, 170]; // warm near-white on hover
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('ascii-canvas');
+const ctx    = canvas.getContext('2d');
+
+let brightMap = null;
+let charMap   = null;
+let ROWS = 0, COLS = 0;
+let briMax = 0.70;   // actual image brightness ceiling, computed in buildMap
+let mouseX = -9999, mouseY = -9999;
+
+function lerp(a, b, t) { return a + (b - a) * Math.max(0, Math.min(1, t)); }
+
+// ── Build map ─────────────────────────────────────────────────────────────────
+function buildMap(img) {
+  const W = canvas.parentElement.clientWidth;
+  const H = canvas.parentElement.clientHeight;
+
+  COLS = Math.floor(W / CELL_W);
+  ROWS = Math.floor(H / CELL_H);
+
+  // Sample the tight crop region stretched to fill the grid.
+  // This zooms into the face area, making it fill the canvas.
+  const off    = document.createElement('canvas');
+  off.width    = COLS;
+  off.height   = ROWS;
+  const offCtx = off.getContext('2d');
+
+  const sx = img.naturalWidth  * CROP.left;
+  const sy = img.naturalHeight * CROP.top;
+  const sw = img.naturalWidth  * (CROP.right  - CROP.left);
+  const sh = img.naturalHeight * (CROP.bottom - CROP.top);
+  offCtx.drawImage(img, sx, sy, sw, sh, 0, 0, COLS, ROWS);
+
+  const px = offCtx.getImageData(0, 0, COLS, ROWS).data;
+
+  brightMap = new Float32Array(ROWS * COLS);
+  charMap   = new Uint8Array(ROWS * COLS);
+
+  // Seed char assignment with a hash that varies in both axes for texture
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const i   = (r * COLS + c) * 4;
+      const bri = (px[i] * 0.299 + px[i+1] * 0.587 + px[i+2] * 0.114) / 255;
+      brightMap[r * COLS + c] = bri;
+      charMap[r * COLS + c]   = (r * 17 + c * 13 + (r ^ c) * 5) % CHARS.length;
+    }
+  }
+
+  // ── Dynamic brightness ceiling ──────────────────────────────────────────────
+  // Use the 97th-percentile brightness (ignores isolated hot pixels)
+  // so the colour mapping always reaches full #E8440A on the brightest face area.
+  const allBri = Array.from(brightMap).sort((a, b) => a - b);
+  const p97    = allBri[Math.floor(allBri.length * 0.97)];
+  briMax = Math.max(p97, MIN_BRI + 0.05); // safety floor
+
+  // Resize canvas and re-apply font (resize resets 2D context state)
+  canvas.width  = COLS * CELL_W;
+  canvas.height = ROWS * CELL_H;
+  ctx.font         = FONT_PX + "px 'Courier New', Courier, monospace";
+  ctx.textBaseline = 'top';
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderFrame() {
+  ctx.font         = FONT_PX + "px 'Courier New', Courier, monospace";
+  ctx.textBaseline = 'top';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const rect   = canvas.getBoundingClientRect();
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx     = (mouseX - rect.left) * scaleX;
+  const my     = (mouseY - rect.top)  * scaleY;
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const bri = brightMap[r * COLS + c];
+      if (bri < MIN_BRI) continue; // skip background / dark clothing
+
+      const x = c * CELL_W;
+      const y = r * CELL_H;
+
+      // Normalise brightness to [0,1] relative to actual image ceiling,
+      // then apply a power curve < 1 to lift mid-tones so the face pops.
+      const norm = Math.min(1, (bri - MIN_BRI) / (briMax - MIN_BRI));
+      const t    = Math.pow(norm, 0.70); // 0.70 < 1 → mid-tones shift brighter
+
+      let cr = lerp(C_DIM[0], C_FULL[0], t);
+      let cg = lerp(C_DIM[1], C_FULL[1], t);
+      let cb = lerp(C_DIM[2], C_FULL[2], t);
+
+      // Hover: shift toward warm glow within HOVER_R radius
+      const dx = x + CELL_W * 0.5 - mx;
+      const dy = y + CELL_H * 0.5 - my;
+      const ht = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / HOVER_R);
+      if (ht > 0) {
+        const ht2 = ht * ht;
+        cr = lerp(cr, C_GLOW[0], ht2);
+        cg = lerp(cg, C_GLOW[1], ht2);
+        cb = lerp(cb, C_GLOW[2], ht2);
+      }
+
+      ctx.fillStyle = 'rgb(' + (cr|0) + ',' + (cg|0) + ',' + (cb|0) + ')';
+      ctx.fillText(CHARS[charMap[r * COLS + c]], x, y);
+    }
+  }
+}
+
+// ── Loop ──────────────────────────────────────────────────────────────────────
+function loop() {
+  if (brightMap) renderFrame();
+  requestAnimationFrame(loop);
+}
+
+// ── Load ──────────────────────────────────────────────────────────────────────
+const portrait = new Image();
+portrait.onload = function () {
+  buildMap(this);
+};
+portrait.onerror = function () {
+  console.error('Portrait failed to load from:', IMG_PATH);
+};
+portrait.src = IMG_PATH;
+
+// Start loop immediately; it will no-op until brightMap is ready
+requestAnimationFrame(loop);
+
+// ── Mouse tracking ────────────────────────────────────────────────────────────
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+}, { passive: true });
+
+// ── Rebuild on resize ─────────────────────────────────────────────────────────
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (portrait.complete && portrait.naturalWidth > 0) buildMap(portrait);
+  }, 150);
+});
+</script>
+</body>
+</html>
