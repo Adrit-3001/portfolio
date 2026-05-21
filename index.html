@@ -269,31 +269,26 @@
 //  Fixes: tight face crop, dynamic brightness, rich char set
 // ─────────────────────────────────────────────────────────────────────────────
 
-const IMG_PATH = 'portrait/image.png';
+const PORTRAIT = {
+  imagePath: 'portrait/image.png',
+  cellW: 9,
+  cellH: 13,
+  fontPx: 11,
+  faceCx: 0.50,
+  faceCy: 0.38,
+  zoom: 0.70,
+  stretchX: 1.3,
+  stretchY: 1.0,
+  minBri: 0.09,
+  hoverRadius: 120,
+  dimColor: [65, 14, 0],
+  fullColor: [232, 68, 10],
+  glowColor: [255, 245, 170],
+};
 
-// Cell size — larger = fewer chars = each one pops more (low-res look)
-const CELL_W  = 9;
-const CELL_H  = 13;
-const FONT_PX = 10;
-
-// Face center (fractions of image) and zoom factor.
-// zoom = fraction of image shown (0.60 → 1.67× magnification).
-const FACE_CX = 0.50, FACE_CY = 0.38, ZOOM = 0.70;
-
-// Pixels darker than MIN_BRI are invisible (bg / dark clothing).
-const MIN_BRI = 0.09;
-
-// Hover glow radius in canvas pixels
-const HOVER_R = 120;
-
-// Rich character set: letters + numbers + symbols for visual texture
+// Rich character set: letters + numbers + symbols for visual texture.
 const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' +
               '0123456789@#$%&*!?+=~^:;.,<>[]{}()|/-\\`\'';
-
-// Colours: dim orange for shadows, full #E8440A for highlights
-const C_DIM  = [65,  14,  0];
-const C_FULL = [232, 68, 10];
-const C_GLOW = [255, 245, 170]; // warm near-white on hover
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('ascii-canvas');
@@ -312,8 +307,10 @@ function buildMap(img) {
   const W = canvas.parentElement.clientWidth;
   const H = canvas.parentElement.clientHeight;
 
-  COLS = Math.floor(W / CELL_W);
-  ROWS = Math.floor(H / CELL_H);
+  COLS = Math.floor(W / PORTRAIT.cellW);
+  ROWS = Math.floor(H / PORTRAIT.cellH);
+  canvas.width  = W;
+  canvas.height = H;
 
   // Sample the tight crop region stretched to fill the grid.
   // This zooms into the face area, making it fill the canvas.
@@ -327,14 +324,20 @@ function buildMap(img) {
   const imgAR    = img.naturalWidth / img.naturalHeight;
   let cropW, cropH;
   if (canvasAR <= imgAR) {
-    cropH = img.naturalHeight * ZOOM;
+    cropH = img.naturalHeight * PORTRAIT.zoom;
     cropW = cropH * canvasAR;
   } else {
-    cropW = img.naturalWidth * ZOOM;
+    cropW = img.naturalWidth * PORTRAIT.zoom;
     cropH = cropW / canvasAR;
   }
-  let sx = img.naturalWidth  * FACE_CX - cropW / 2;
-  let sy = img.naturalHeight * FACE_CY - cropH / 2;
+
+  // Independent axis stretch controls.
+  // Values > 1 make the rendered portrait appear larger on that axis.
+  cropW /= PORTRAIT.stretchX;
+  cropH /= PORTRAIT.stretchY;
+
+  let sx = img.naturalWidth  * PORTRAIT.faceCx - cropW / 2;
+  let sy = img.naturalHeight * PORTRAIT.faceCy - cropH / 2;
   sx = Math.max(0, Math.min(img.naturalWidth  - cropW, sx));
   sy = Math.max(0, Math.min(img.naturalHeight - cropH, sy));
   offCtx.drawImage(img, sx, sy, cropW, cropH, 0, 0, COLS, ROWS);
@@ -359,18 +362,16 @@ function buildMap(img) {
   // so the colour mapping always reaches full #E8440A on the brightest face area.
   const allBri = Array.from(brightMap).sort((a, b) => a - b);
   const p97    = allBri[Math.floor(allBri.length * 0.97)];
-  briMax = Math.max(p97, MIN_BRI + 0.05); // safety floor
+  briMax = Math.max(p97, PORTRAIT.minBri + 0.05); // safety floor
 
   // Resize canvas and re-apply font (resize resets 2D context state)
-  canvas.width  = COLS * CELL_W;
-  canvas.height = ROWS * CELL_H;
-  ctx.font         = FONT_PX + "px 'Courier New', Courier, monospace";
+  ctx.font         = PORTRAIT.fontPx + "px 'Courier New', Courier, monospace";
   ctx.textBaseline = 'top';
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function renderFrame() {
-  ctx.font         = FONT_PX + "px 'Courier New', Courier, monospace";
+  ctx.font         = PORTRAIT.fontPx + "px 'Courier New', Courier, monospace";
   ctx.textBaseline = 'top';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -383,29 +384,29 @@ function renderFrame() {
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const bri = brightMap[r * COLS + c];
-      if (bri < MIN_BRI) continue; // skip background / dark clothing
+      if (bri < PORTRAIT.minBri) continue; // skip background / dark clothing
 
-      const x = c * CELL_W;
-      const y = r * CELL_H;
+      const x = c * PORTRAIT.cellW;
+      const y = r * PORTRAIT.cellH;
 
       // Normalise brightness to [0,1] relative to actual image ceiling,
       // then apply a power curve < 1 to lift mid-tones so the face pops.
-      const norm = Math.min(1, (bri - MIN_BRI) / (briMax - MIN_BRI));
+      const norm = Math.min(1, (bri - PORTRAIT.minBri) / (briMax - PORTRAIT.minBri));
       const t    = Math.pow(norm, 0.70); // 0.70 < 1 → mid-tones shift brighter
 
-      let cr = lerp(C_DIM[0], C_FULL[0], t);
-      let cg = lerp(C_DIM[1], C_FULL[1], t);
-      let cb = lerp(C_DIM[2], C_FULL[2], t);
+      let cr = lerp(PORTRAIT.dimColor[0], PORTRAIT.fullColor[0], t);
+      let cg = lerp(PORTRAIT.dimColor[1], PORTRAIT.fullColor[1], t);
+      let cb = lerp(PORTRAIT.dimColor[2], PORTRAIT.fullColor[2], t);
 
       // Hover: shift toward warm glow within HOVER_R radius
-      const dx = x + CELL_W * 0.5 - mx;
-      const dy = y + CELL_H * 0.5 - my;
-      const ht = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / HOVER_R);
+      const dx = x + PORTRAIT.cellW * 0.5 - mx;
+      const dy = y + PORTRAIT.cellH * 0.5 - my;
+      const ht = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / PORTRAIT.hoverRadius);
       if (ht > 0) {
         const ht2 = ht * ht;
-        cr = lerp(cr, C_GLOW[0], ht2);
-        cg = lerp(cg, C_GLOW[1], ht2);
-        cb = lerp(cb, C_GLOW[2], ht2);
+        cr = lerp(cr, PORTRAIT.glowColor[0], ht2);
+        cg = lerp(cg, PORTRAIT.glowColor[1], ht2);
+        cb = lerp(cb, PORTRAIT.glowColor[2], ht2);
       }
 
       ctx.fillStyle = 'rgb(' + (cr|0) + ',' + (cg|0) + ',' + (cb|0) + ')';
@@ -426,9 +427,9 @@ portrait.onload = function () {
   buildMap(this);
 };
 portrait.onerror = function () {
-  console.error('Portrait failed to load from:', IMG_PATH);
+  console.error('Portrait failed to load from:', PORTRAIT.imagePath);
 };
-portrait.src = IMG_PATH;
+portrait.src = PORTRAIT.imagePath;
 
 // Start loop immediately; it will no-op until brightMap is ready
 requestAnimationFrame(loop);
