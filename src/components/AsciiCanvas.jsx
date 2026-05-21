@@ -23,6 +23,13 @@ const PORTRAIT = {
   flickerDelayMax: 140,
   flickerDurationMin: 700,
   flickerDurationMax: 2000,
+  followProximity: 360,
+  followMaxOffset: 32,
+  followLag: 0.16,
+  followJiggle: 2.5,
+  rippleSpeed: 260,
+  rippleDuration: 1600,
+  rippleThickness: 22,
 };
 
 const CHARS =
@@ -42,6 +49,10 @@ export default function AsciiCanvas() {
     let charMap = null;
     let visibleCells = [];
     let flickers = new Map();
+    let imageBounds = null;
+    let activeRipples = [];
+    let followOffsetX = 0;
+    let followOffsetY = 0;
     let ROWS = 0, COLS = 0;
     let briMax = 0.70;
     let mouseX = -9999, mouseY = -9999;
@@ -73,6 +84,52 @@ export default function AsciiCanvas() {
           until: now + PORTRAIT.flickerDurationMin + Math.random() * (PORTRAIT.flickerDurationMax - PORTRAIT.flickerDurationMin),
         });
       }
+    }
+
+    function rebuildImageBounds() {
+      if (!visibleCells.length) {
+        imageBounds = null;
+        return;
+      }
+
+      let minRow = ROWS;
+      let minCol = COLS;
+      let maxRow = 0;
+      let maxCol = 0;
+
+      for (let i = 0; i < visibleCells.length; i++) {
+        const cellIndex = visibleCells[i];
+        const row = Math.floor(cellIndex / COLS);
+        const col = cellIndex % COLS;
+
+        if (row < minRow) minRow = row;
+        if (col < minCol) minCol = col;
+        if (row > maxRow) maxRow = row;
+        if (col > maxCol) maxCol = col;
+      }
+
+      imageBounds = {
+        left: minCol * PORTRAIT.cellW,
+        top: minRow * PORTRAIT.cellH,
+        right: (maxCol + 1) * PORTRAIT.cellW,
+        bottom: (maxRow + 1) * PORTRAIT.cellH,
+      };
+      imageBounds.width = imageBounds.right - imageBounds.left;
+      imageBounds.height = imageBounds.bottom - imageBounds.top;
+      imageBounds.centerX = imageBounds.left + imageBounds.width * 0.5;
+      imageBounds.centerY = imageBounds.top + imageBounds.height * 0.5;
+    }
+
+    function isNearImage(mx, my) {
+      if (!imageBounds) return false;
+
+      const pad = PORTRAIT.followProximity;
+      return (
+        mx >= imageBounds.left - pad &&
+        mx <= imageBounds.right + pad &&
+        my >= imageBounds.top - pad &&
+        my <= imageBounds.bottom + pad
+      );
     }
 
     function buildMap(img) {
@@ -124,6 +181,10 @@ export default function AsciiCanvas() {
       }
 
       flickers.clear();
+      activeRipples = [];
+      followOffsetX = 0;
+      followOffsetY = 0;
+      rebuildImageBounds();
       nextDropAt = performance.now() + PORTRAIT.flickerDelayMin;
 
       const allBri = Array.from(brightMap).sort((a, b) => a - b);
@@ -149,11 +210,35 @@ export default function AsciiCanvas() {
         if (flicker.until <= now) flickers.delete(cellIndex);
       }
 
+      activeRipples = activeRipples.filter((ripple) => now - ripple.startedAt < PORTRAIT.rippleDuration);
+
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
       const mx = (mouseX - rect.left) * scaleX;
       const my = (mouseY - rect.top) * scaleY;
+
+      const nearImage = isNearImage(mx, my);
+      let targetFollowX = 0;
+      let targetFollowY = 0;
+
+      if (nearImage && imageBounds) {
+        const distX = mx - imageBounds.centerX;
+        const distY = my - imageBounds.centerY;
+        const maxDist = Math.max(imageBounds.width, imageBounds.height) * 0.5 + PORTRAIT.followProximity;
+        const proximity = Math.max(0, 1 - Math.sqrt(distX * distX + distY * distY) / maxDist);
+        const dirScale = Math.max(imageBounds.width, imageBounds.height) || 1;
+        targetFollowX = (distX / dirScale) * PORTRAIT.followMaxOffset * proximity;
+        targetFollowY = (distY / dirScale) * PORTRAIT.followMaxOffset * proximity;
+      }
+
+      followOffsetX = lerp(followOffsetX, targetFollowX, PORTRAIT.followLag);
+      followOffsetY = lerp(followOffsetY, targetFollowY, PORTRAIT.followLag);
+
+      const followJiggleX = nearImage ? Math.sin(now * 0.0075 + followOffsetY * 0.18) * PORTRAIT.followJiggle * 0.35 : 0;
+      const followJiggleY = nearImage ? Math.cos(now * 0.0085 + followOffsetX * 0.18) * PORTRAIT.followJiggle * 0.35 : 0;
+      const drawOffsetX = followOffsetX + followJiggleX;
+      const drawOffsetY = followOffsetY + followJiggleY;
 
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
@@ -163,6 +248,8 @@ export default function AsciiCanvas() {
           const cellIndex = r * COLS + c;
           const x = c * PORTRAIT.cellW;
           const y = r * PORTRAIT.cellH;
+          const drawX = x + drawOffsetX + ((c / Math.max(1, COLS - 1)) - 0.5) * drawOffsetX * 0.18;
+          const drawY = y + drawOffsetY + ((r / Math.max(1, ROWS - 1)) - 0.5) * drawOffsetY * 0.18;
 
           const norm = Math.min(1, (bri - PORTRAIT.minBri) / (briMax - PORTRAIT.minBri));
           const t = Math.pow(norm, 0.70);
@@ -171,8 +258,8 @@ export default function AsciiCanvas() {
           let cg = lerp(PORTRAIT.dimColor[1], PORTRAIT.fullColor[1], t);
           let cb = lerp(PORTRAIT.dimColor[2], PORTRAIT.fullColor[2], t);
 
-          const dx = x + PORTRAIT.cellW * 0.5 - mx;
-          const dy = y + PORTRAIT.cellH * 0.5 - my;
+          const dx = drawX + PORTRAIT.cellW * 0.5 - mx;
+          const dy = drawY + PORTRAIT.cellH * 0.5 - my;
           const ht = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / PORTRAIT.hoverRadius);
           if (ht > 0) {
             const ht2 = ht * ht;
@@ -181,10 +268,25 @@ export default function AsciiCanvas() {
             cb = lerp(cb, PORTRAIT.glowColor[2], ht2);
           }
 
+          // for (let i = 0; i < activeRipples.length; i++) {
+          //   const ripple = activeRipples[i];
+          //   const age = now - ripple.startedAt;
+          //   const radius = age * PORTRAIT.rippleSpeed;
+          //   const dist = Math.sqrt((drawX + PORTRAIT.cellW * 0.5 - ripple.x) ** 2 + (drawY + PORTRAIT.cellH * 0.5 - ripple.y) ** 2);
+          //   const ring = 1 - Math.abs(dist - radius) / PORTRAIT.rippleThickness;
+          //   const flash = 1 - age / 240;
+          //   const pulse = Math.max(0, Math.min(1, Math.max(ring, flash)));
+          //   if (pulse > 0) {
+          //     cr = lerp(cr, PORTRAIT.glowColor[0], pulse * 0.95);
+          //     cg = lerp(cg, PORTRAIT.glowColor[1], pulse * 0.8);
+          //     cb = lerp(cb, PORTRAIT.glowColor[2], pulse * 0.65);
+          //   }
+          // }
+
           ctx.fillStyle = `rgb(${cr | 0},${cg | 0},${cb | 0})`;
           const flicker = flickers.get(cellIndex);
           const charIndex = flicker ? flicker.charIndex : charMap[cellIndex];
-          ctx.fillText(CHARS[charIndex], x, y);
+          ctx.fillText(CHARS[charIndex], drawX, drawY);
         }
       }
     }
@@ -204,6 +306,23 @@ export default function AsciiCanvas() {
     const handleMouseMove = (e) => { mouseX = e.clientX; mouseY = e.clientY; };
     document.addEventListener('mousemove', handleMouseMove, { passive: true });
 
+    const handleClick = (e) => {
+      if (!imageBounds) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      if (!isNearImage(x, y)) return;
+
+      activeRipples.push({
+        x,
+        y,
+        startedAt: performance.now(),
+      });
+    };
+    document.addEventListener('click', handleClick);
+
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
@@ -216,6 +335,7 @@ export default function AsciiCanvas() {
       cancelAnimationFrame(rafId);
       clearTimeout(resizeTimer);
       document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('click', handleClick);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
