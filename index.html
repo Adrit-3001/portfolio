@@ -168,7 +168,9 @@
       display: block;
       width: 100%;
       height: 100%;
-      /* canvas internal coords set by JS; CSS stretches it to fill the container */
+      object-fit: cover;
+      object-position: center;
+      /* keep the rendered portrait proportional while the JS crop handles zoom */
     }
 
     /* ── BOTTOM BAR ── */
@@ -274,9 +276,9 @@ const CELL_W  = 9;
 const CELL_H  = 13;
 const FONT_PX = 10;
 
-// Tight crop rectangle (fractions of image dimensions).
-// Cuts the excess dark background so the face fills the canvas.
-const CROP = { left: 0.18, right: 0.84, top: 0.0, bottom: 0.95 };
+// Face center (fractions of image) and zoom factor.
+// zoom = fraction of image shown (0.60 → 1.67× magnification).
+const FACE_CX = 0.50, FACE_CY = 0.38, ZOOM = 0.70;
 
 // Pixels darker than MIN_BRI are invisible (bg / dark clothing).
 const MIN_BRI = 0.09;
@@ -320,11 +322,22 @@ function buildMap(img) {
   off.height   = ROWS;
   const offCtx = off.getContext('2d');
 
-  const sx = img.naturalWidth  * CROP.left;
-  const sy = img.naturalHeight * CROP.top;
-  const sw = img.naturalWidth  * (CROP.right  - CROP.left);
-  const sh = img.naturalHeight * (CROP.bottom - CROP.top);
-  offCtx.drawImage(img, sx, sy, sw, sh, 0, 0, COLS, ROWS);
+  // AR-preserving crop: match canvas AR exactly so drawImage never stretches.
+  const canvasAR = COLS / ROWS;
+  const imgAR    = img.naturalWidth / img.naturalHeight;
+  let cropW, cropH;
+  if (canvasAR <= imgAR) {
+    cropH = img.naturalHeight * ZOOM;
+    cropW = cropH * canvasAR;
+  } else {
+    cropW = img.naturalWidth * ZOOM;
+    cropH = cropW / canvasAR;
+  }
+  let sx = img.naturalWidth  * FACE_CX - cropW / 2;
+  let sy = img.naturalHeight * FACE_CY - cropH / 2;
+  sx = Math.max(0, Math.min(img.naturalWidth  - cropW, sx));
+  sy = Math.max(0, Math.min(img.naturalHeight - cropH, sy));
+  offCtx.drawImage(img, sx, sy, cropW, cropH, 0, 0, COLS, ROWS);
 
   const px = offCtx.getImageData(0, 0, COLS, ROWS).data;
 
