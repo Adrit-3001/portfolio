@@ -2,6 +2,21 @@ import GlitchText from './GlitchText';
 import ScrollReveal from './ScrollReveal';
 import PolaroidStack from './PolaroidStack';
 
+const EXP_IMAGES = [
+  {
+    src: '/work_experience/wsi-annotated.png',
+    alt: 'Annotated whole-slide histopathology image with labeled tissue regions',
+    label: 'Annotated WSI',
+    objectPosition: 'top left',
+  },
+  {
+    src: '/work_experience/inference-pipeline.png',
+    alt: 'Directed inference pipeline: tile selection, neoplastic probability, cluster map',
+    label: 'Inference Output',
+    objectPosition: 'center',
+  },
+];
+
 const EXPERIENCE_IMAGE_GAP = '170px';
 
 export default function ExperienceSection() {
@@ -49,7 +64,10 @@ export default function ExperienceSection() {
         </ScrollReveal>
 
         <ScrollReveal className="polaroid-col" delay={200}>
-          <PolaroidStack />
+          <PolaroidStack
+            images={EXP_IMAGES}
+            ariaLabel="View research images"
+          />
         </ScrollReveal>
       </div>
     </section>
