@@ -16,6 +16,13 @@ const PORTRAIT = {
   dimColor: [65, 14, 0],
   fullColor: [232, 68, 10],
   glowColor: [255, 245, 170],
+  flickerMaxActive: 572,
+  flickerBurstMin: 100,
+  flickerBurstMax: 570,
+  flickerDelayMin: 35,
+  flickerDelayMax: 140,
+  flickerDurationMin: 700,
+  flickerDurationMax: 2000,
 };
 
 const CHARS =
@@ -33,11 +40,40 @@ export default function AsciiCanvas() {
 
     let brightMap = null;
     let charMap = null;
+    let visibleCells = [];
+    let flickers = new Map();
     let ROWS = 0, COLS = 0;
     let briMax = 0.70;
     let mouseX = -9999, mouseY = -9999;
     let rafId;
     let resizeTimer;
+    let nextDropAt = 0;
+
+    function randomCharIndex(excludeIndex) {
+      let next = excludeIndex;
+      while (next === excludeIndex) {
+        next = Math.floor(Math.random() * CHARS.length);
+      }
+      return next;
+    }
+
+    function spawnFlicker(now) {
+      if (!visibleCells.length || flickers.size >= PORTRAIT.flickerMaxActive) return;
+
+      const burstCount = Math.min(
+        PORTRAIT.flickerMaxActive - flickers.size,
+        PORTRAIT.flickerBurstMin + ((Math.random() * (PORTRAIT.flickerBurstMax - PORTRAIT.flickerBurstMin + 1)) | 0),
+      );
+
+      for (let i = 0; i < burstCount; i++) {
+        const cellIndex = visibleCells[(Math.random() * visibleCells.length) | 0];
+        const baseIndex = charMap[cellIndex];
+        flickers.set(cellIndex, {
+          charIndex: randomCharIndex(baseIndex),
+          until: now + PORTRAIT.flickerDurationMin + Math.random() * (PORTRAIT.flickerDurationMax - PORTRAIT.flickerDurationMin),
+        });
+      }
+    }
 
     function buildMap(img) {
       const W = canvas.parentElement.clientWidth;
@@ -75,6 +111,7 @@ export default function AsciiCanvas() {
       const px = offCtx.getImageData(0, 0, COLS, ROWS).data;
       brightMap = new Float32Array(ROWS * COLS);
       charMap = new Uint8Array(ROWS * COLS);
+      visibleCells = [];
 
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
@@ -82,8 +119,12 @@ export default function AsciiCanvas() {
           const bri = (px[i] * 0.299 + px[i + 1] * 0.587 + px[i + 2] * 0.114) / 255;
           brightMap[r * COLS + c] = bri;
           charMap[r * COLS + c] = (r * 17 + c * 13 + (r ^ c) * 5) % CHARS.length;
+          if (bri >= PORTRAIT.minBri) visibleCells.push(r * COLS + c);
         }
       }
+
+      flickers.clear();
+      nextDropAt = performance.now() + PORTRAIT.flickerDelayMin;
 
       const allBri = Array.from(brightMap).sort((a, b) => a - b);
       const p97 = allBri[Math.floor(allBri.length * 0.97)];
@@ -98,6 +139,16 @@ export default function AsciiCanvas() {
       ctx.textBaseline = 'top';
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const now = performance.now();
+      while (now >= nextDropAt) {
+        spawnFlicker(now);
+        nextDropAt = now + PORTRAIT.flickerDelayMin + Math.random() * (PORTRAIT.flickerDelayMax - PORTRAIT.flickerDelayMin);
+      }
+
+      for (const [cellIndex, flicker] of flickers) {
+        if (flicker.until <= now) flickers.delete(cellIndex);
+      }
+
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
@@ -109,6 +160,7 @@ export default function AsciiCanvas() {
           const bri = brightMap[r * COLS + c];
           if (bri < PORTRAIT.minBri) continue;
 
+          const cellIndex = r * COLS + c;
           const x = c * PORTRAIT.cellW;
           const y = r * PORTRAIT.cellH;
 
@@ -130,7 +182,9 @@ export default function AsciiCanvas() {
           }
 
           ctx.fillStyle = `rgb(${cr | 0},${cg | 0},${cb | 0})`;
-          ctx.fillText(CHARS[charMap[r * COLS + c]], x, y);
+          const flicker = flickers.get(cellIndex);
+          const charIndex = flicker ? flicker.charIndex : charMap[cellIndex];
+          ctx.fillText(CHARS[charIndex], x, y);
         }
       }
     }
