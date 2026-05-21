@@ -4,14 +4,21 @@ export default function Hero() {
   return (
     <section className="hero">
       <div className="hero-left">
-        <h1>Computer<br />Science<br />Engineer.</h1>
+        <h1>Adrit<br />Panday.</h1>
+        <p className="hero-subtitle">Computer Science Engineer.</p>
         <p className="hero-desc">
-          Adrit Panday is a CS Specialist at the University of Toronto Scarborough,
-          building at the intersection of machine learning, systems programming, and robotics.
+          CS Specialist at the University of Toronto Scarborough with a minor in
+          Astrophysics &amp; Astronomy. I build at the intersection of machine
+          learning, systems programming, and scientific computing — from neural
+          networks in raw C to AI-assisted clinical imaging pipelines.
         </p>
         <div className="ctas">
-          <a href="#" className="btn-orange">View my work<span className="plus">+</span></a>
-          <a href="mailto:adrit.panday@mail.utoronto.ca" className="btn-link">Get in touch</a>
+          <a href="mailto:adrit.panday@mail.utoronto.ca" className="btn-orange">
+            Get in touch<span className="plus">+</span>
+          </a>
+          <a href="mailto:adrit.panday@mail.utoronto.ca" className="btn-link">
+            adrit.panday@mail.utoronto.ca
+          </a>
         </div>
       </div>
 
