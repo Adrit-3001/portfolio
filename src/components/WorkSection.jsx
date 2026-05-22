@@ -89,12 +89,12 @@ const PROJECTS = [
 
 export default function WorkSection() {
   return (
-    <section className="section">
+    <section className="section" id="projects">
       <div className="section-label">
         <GlitchText tag="h2" className="section-title">
           Selected Projects
         </GlitchText>
-        <span className="section-num">03 / 03</span>
+        <span className="section-num">03 / 04</span>
       </div>
 
       {PROJECTS.map((project) => (

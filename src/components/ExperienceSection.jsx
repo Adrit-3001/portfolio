@@ -21,12 +21,12 @@ const EXPERIENCE_IMAGE_GAP = '170px';
 
 export default function ExperienceSection() {
   return (
-    <section className="section section-exp" style={{ '--exp-image-gap': EXPERIENCE_IMAGE_GAP }}>
+    <section className="section section-exp" id="experience" style={{ '--exp-image-gap': EXPERIENCE_IMAGE_GAP }}>
       <div className="section-label">
         <GlitchText tag="h2" className="section-title">
           Work Experience
         </GlitchText>
-        <span className="section-num">02 / 03</span>
+        <span className="section-num">02 / 04</span>
       </div>
 
       <div className="exp-content-grid">
