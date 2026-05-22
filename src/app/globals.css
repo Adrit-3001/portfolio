@@ -81,13 +81,13 @@ nav {
 
 .hero-left {
   position: absolute;
-  left: 0; top: 0;
-  width: 43%;
+  left: 9%; top: 0;
+  width: 44%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 40px 80px 72px;
+  padding: 0 40px 80px 48px;
   z-index: 10;
 }
 
@@ -110,7 +110,7 @@ h1 {
 .hero-desc {
   font-size: 13px;
   color: rgba(255,255,255,0.38);
-  max-width: 340px;
+  max-width: 620px;
   line-height: 1.78;
   margin-bottom: 44px;
 }
@@ -155,8 +155,8 @@ h1 {
 
 .hero-right {
   position: absolute;
-  right: 0; top: 0;
-  width: 58%;
+  right: 10%; top: 0;
+  width: 46%;
   height: 100%;
 }
 

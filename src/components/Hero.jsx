@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section className="hero">
       <div className="hero-left">
-        <h1>Adrit<br />Panday.</h1>
+        <h1>Adrit Panday.</h1>
         <p className="hero-subtitle">Computer Science Engineer.</p>
         <p className="hero-desc">
           CS Specialist at the University of Toronto Scarborough with a minor in
