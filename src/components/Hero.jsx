@@ -42,8 +42,12 @@ export default function Hero() {
         <p className="hero-desc">
           CS Specialist at the University of Toronto Scarborough with a minor in
           Astrophysics &amp; Astronomy. I build at the intersection of machine
-          learning, systems programming, and scientific computing — from neural
-          networks in raw C to AI-assisted clinical imaging pipelines.
+          learning, systems programming, and full-stack engineering — from neural
+          networks in raw C to AI-assisted clinical imaging pipelines and
+          real-time geospatial platforms. On the full-stack side I architect
+          end-to-end products with Node.js, Next.js, and MongoDB, containerized
+          with Docker and shipped with automated CI/CD. Outside of engineering,
+          I&apos;m usually deep in a video game or out in the park playing with friends.
         </p>
         <div className="ctas">
           <div className="cta-wrap" ref={wrapRef}>

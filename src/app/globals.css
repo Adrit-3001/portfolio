@@ -429,6 +429,29 @@ h1 {
   color: rgba(255,255,255,0.18);
 }
 
+.proj-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.proj-bullets li {
+  font-size: 14px;
+  color: rgb(218, 205, 205);
+  line-height: 1.78;
+  padding-left: 16px;
+  position: relative;
+}
+
+.proj-bullets li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: rgba(255,255,255,0.18);
+}
+
 /* ── POLAROID COLUMN ── */
 .polaroid-col {
   opacity: 0;

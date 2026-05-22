@@ -9,7 +9,12 @@ const PROJECTS = [
     year: '2025',
     type: 'Full-Stack · Geospatial',
     stack: 'Node.js · Next.js · MongoDB · Docker',
-    desc: 'Architected a full-stack geospatial platform enabling real-time visualization and analysis of Great Lakes nearshore water temperature data. Containerized with Docker, CI/CD via GitHub Actions with ~90% automated test coverage, and RESTful APIs backed by MongoDB with JWT authentication.',
+    desc: 'Architected a full-stack geospatial platform enabling real-time visualization and analysis of Great Lakes nearshore water temperature data.',
+    bullets: [
+      'Built interactive Leaflet maps and Chart.js dashboards for real-time water temperature visualization across Great Lakes beaches.',
+      'Designed RESTful APIs with JWT-based authentication and MongoDB data models supporting high-volume geospatial data ingestion.',
+      'Containerized with Docker and implemented CI/CD via GitHub Actions with ~90% automated test coverage and production deployment readiness.',
+    ],
     images: [
       {
         src: '/projects/GLOW_home_page.png',
@@ -31,7 +36,12 @@ const PROJECTS = [
     year: '2026',
     type: 'Systems · Machine Learning',
     stack: 'C',
-    desc: 'Built a complete neural network training engine in C with no external ML libraries — implementing forward propagation, backpropagation, and explicit weight updates from first principles. Achieved 80%+ classification accuracy on MNIST and analyzed architectural tradeoffs between shallow and multi-layer networks on CIFAR-10.',
+    desc: 'Built a complete neural network training engine in C with no external ML libraries — implementing forward propagation, backpropagation, and explicit weight updates from first principles.',
+    bullets: [
+      'Derived and implemented full error backpropagation from scratch, carefully managing gradient flow and weight update sequencing across layers.',
+      'Achieved 80%+ classification accuracy on MNIST; analyzed performance gaps between shallow and multi-layer architectures on CIFAR-10.',
+      'Experimented with activation functions, hidden layer sizes, and input scaling to mitigate saturation and optimize convergence.',
+    ],
     images: [
       {
         src: '/projects/MINST_data.png',
@@ -53,7 +63,12 @@ const PROJECTS = [
     year: '2026',
     type: 'AI · Algorithms',
     stack: 'C',
-    desc: 'Engineered an adversarial multi-agent decision system combining A* pathfinding (Manhattan heuristic, priority-queue optimized) with MiniMax alpha-beta pruning for real-time grid navigation. Alpha-beta pruning reduces evaluated states by ~60% at search depth ≥ 10, enabling real-time decisions in large constrained environments.',
+    desc: 'Engineered an adversarial multi-agent decision system combining A* pathfinding with MiniMax alpha-beta pruning for real-time grid navigation.',
+    bullets: [
+      'Built A* pathfinding with Manhattan heuristic and priority-queue optimization for optimal, real-time path planning in constrained grids.',
+      'Developed MiniMax with alpha-beta pruning, reducing evaluated states by ~60% at search depth ≥ 10 for sub-second adversarial decisions.',
+      'Designed the system to handle dynamic opponent behaviour, enabling robust navigation across large, unpredictable environments.',
+    ],
     images: [
       {
         src: '/projects/search_MinMax.png',
@@ -75,7 +90,12 @@ const PROJECTS = [
     year: '2024',
     type: 'ML · Data Science',
     stack: 'Python',
-    desc: '1st place at MTA Datathon among 50+ participants. Applied ML-driven trend forecasting, risk evaluation, and budget optimization across 15+ race data points — including track history, race results, and car malfunction data — to identify the highest-performing F1 fantasy team within a $1M budget.',
+    desc: '1st place at MTA Datathon among 50+ participants. Applied ML-driven forecasting and budget optimization to build the highest-scoring F1 fantasy team within a $1M cap.',
+    bullets: [
+      'Analyzed 15+ race data points — track history, driver form, results, and car malfunction rates — to build performance forecast models.',
+      'Applied budget optimization within the $1M cap to identify the team scoring 193 points, securing 1st place among 50+ participants.',
+      'Collaborated in a 4-person team using agile workflows across data acquisition, model building, and final presentation.',
+    ],
     images: [
       {
         src: '/projects/Most_optimal_team.png',
@@ -117,6 +137,11 @@ export default function WorkSection() {
               <div className="proj-type">{project.type}</div>
               <div className="proj-stack-label">{project.stack}</div>
               <p className="proj-desc">{project.desc}</p>
+              <ul className="proj-bullets">
+                {project.bullets.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
             </ScrollReveal>
 
             <ScrollReveal className="polaroid-col" delay={200}>
