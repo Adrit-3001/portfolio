@@ -2,7 +2,7 @@ import AsciiCanvas from './AsciiCanvas';
 
 export default function Hero() {
   return (
-    <section className="hero">
+    <section className="hero" id="hero-sentinel">
       <div className="hero-left">
         <h1>Adrit Panday.</h1>
         <p className="hero-subtitle">Computer Science Engineer.</p>

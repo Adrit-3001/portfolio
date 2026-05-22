@@ -204,6 +204,7 @@ h1 {
   padding: 120px 72px;
   min-height: 80vh;
   position: relative;
+  z-index: 1;
 }
 
 .section-exp {
