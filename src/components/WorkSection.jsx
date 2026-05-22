@@ -13,8 +13,14 @@ const PROJECTS = [
     images: [
       {
         src: '/projects/GLOW_home_page.png',
-        alt: 'GLOW dashboard with interactive map showing beach water temperatures across Toronto',
-        label: 'Live Dashboard',
+        alt: 'GLOW Home Page with interactive map showing beach water temperatures across Toronto',
+        label: 'Live Map',
+        objectPosition: 'center top',
+      },
+      {
+        src: '/projects/GLOW_user_dashboard.png',
+        alt: 'GLOW user dashboard where users can view and manage their saved beach locations and edit temperature logs',
+        label: 'User Dashboard',
         objectPosition: 'center',
       },
     ],

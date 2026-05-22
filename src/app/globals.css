@@ -274,9 +274,13 @@ h1 {
   padding: 56px 0;
 }
 
+.section-label + .project-block {
+  border-top: none;
+}
+
 .project-block:last-child {
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  padding-bottom: 80px;
+  border-bottom: none;
+  padding-bottom: 0px;
 }
 
 .proj-text-col {
@@ -336,7 +340,7 @@ h1 {
 
 .proj-desc {
   font-size: 15px;
-  color: rgba(255,255,255,0.5);
+  color: rgb(218, 205, 205);
   line-height: 1.82;
   max-width: 580px;
 }
@@ -412,7 +416,7 @@ h1 {
 
 .exp-bullets li {
   font-size: 15px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(218, 205, 205);
   line-height: 1.82;
   padding-left: 16px;
   position: relative;
@@ -512,7 +516,7 @@ h1 {
 
 .polaroid-hint {
   position: absolute;
-  bottom: -28px;
+  bottom: -18px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 9px;

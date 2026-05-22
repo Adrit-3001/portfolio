@@ -40,14 +40,12 @@ export default function SkillsSection() {
 
       <div className="skills-grid">
         {SKILLS.map((group, i) => (
-          <ScrollReveal key={group.category} delay={i * 90}>
-            <div className="skill-group">
-              <div className="skill-category">{group.category}</div>
-              <div className="skill-tags">
-                {group.items.map((item) => (
-                  <span key={item} className="skill-tag">{item}</span>
-                ))}
-              </div>
+          <ScrollReveal key={group.category} className="skill-group" delay={i * 90}>
+            <div className="skill-category">{group.category}</div>
+            <div className="skill-tags">
+              {group.items.map((item) => (
+                <span key={item} className="skill-tag">{item}</span>
+              ))}
             </div>
           </ScrollReveal>
         ))}
