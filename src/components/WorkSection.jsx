@@ -118,7 +118,7 @@ const PROJECTS = [
     ],
   },
   {
-    id: '05',
+    id: '05', 
     name: 'Multi-Agent Navigation',
     year: '2026',
     type: 'AI · Algorithms',
