@@ -50,6 +50,7 @@ export default function Hero() {
           I&apos;m usually deep in a video game or out in the park playing with friends.
         </p>
         <div className="ctas">
+          <a href="#experience" className="btn-ghost">View Work ↓</a>
           <div className="cta-wrap" ref={wrapRef}>
             <button
               className="btn-orange"

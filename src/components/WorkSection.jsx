@@ -59,6 +59,66 @@ const PROJECTS = [
   },
   {
     id: '03',
+    name: '1st Place MTA F1 Datathon',
+    year: '2024',
+    type: 'ML · Data Science',
+    stack: 'Python',
+    desc: '1st place at MTA Datathon among 50+ participants. Applied ML-driven forecasting and budget optimization to build the highest-scoring F1 fantasy team within a $1M cap.',
+    bullets: [
+      'Analyzed 15+ race data points — track history, driver form, results, and car malfunction rates — to build performance forecast models.',
+      'Applied budget optimization within the $1M cap to identify the team scoring 193 points, securing 1st place among 50+ participants.',
+      'Collaborated in a 4-person team using agile workflows across data acquisition, model building, and final presentation.',
+    ],
+    images: [
+      {
+        src: '/projects/Most_optimal_team.png',
+        alt: 'Optimal F1 fantasy team selection showing 193 total points within $1M budget',
+        label: 'Optimal Team',
+        objectPosition: 'top center',
+      },
+      {
+        src: '/projects/F1_points_driver.png',
+        alt: 'F1 driver points and points-per-cost analysis bar chart',
+        label: 'Driver Analysis',
+        objectPosition: 'top center',
+      },
+    ],
+  },
+  {
+    id: '04',
+    name: 'Robotics & Localization',
+    year: '2024',
+    type: 'Robotics · Computer Vision · AI',
+    stack: 'C/C++ · OpenCV · Linux · LEGO EV3',
+    desc: 'Built two autonomous robot systems from scratch — an adversarial soccer-playing robot and a probabilistic self-localizing navigator — both deployed on LEGO EV3 hardware under real-world noise conditions.',
+    bullets: [
+      'Developed autonomous soccer robot with webcam blob tracking, finite-state decision logic (ball intercept, goal pursuit, opponent avoidance), and Bluetooth actuation — placed Top 8 at RoboSoccer competition.',
+      'Built perspective-correction and heading-estimation calibration pipeline for a 170 cm × 115 cm playfield under noisy vision input.',
+      'Implemented Markov/histogram localization maintaining belief states across grid intersections × 4 orientations with probabilistic sensor fusion for robust recovery from ambiguous states.',
+    ],
+    images: [
+      {
+        src: '/projects/robosoccer_robot.jpg',
+        alt: 'LEGO EV3 robot built for the RoboSoccer competition',
+        label: 'EV3 Robot',
+        objectPosition: 'center',
+      },
+      {
+        src: '/projects/Robo.png',
+        alt: 'RoboSoccer competition field with autonomous robots competing',
+        label: 'RoboSoccer Match',
+        objectPosition: 'center',
+      },
+      {
+        src: '/projects/localization_robot.png',
+        alt: 'Probabilistic localization grid showing robot belief states across orientations',
+        label: 'Localization Grid',
+        objectPosition: 'center',
+      },
+    ],
+  },
+  {
+    id: '05',
     name: 'Multi-Agent Navigation',
     year: '2026',
     type: 'AI · Algorithms',
@@ -84,33 +144,6 @@ const PROJECTS = [
       },
     ],
   },
-  {
-    id: '04',
-    name: 'F1 Fantasy Optimizer',
-    year: '2024',
-    type: 'ML · Data Science',
-    stack: 'Python',
-    desc: '1st place at MTA Datathon among 50+ participants. Applied ML-driven forecasting and budget optimization to build the highest-scoring F1 fantasy team within a $1M cap.',
-    bullets: [
-      'Analyzed 15+ race data points — track history, driver form, results, and car malfunction rates — to build performance forecast models.',
-      'Applied budget optimization within the $1M cap to identify the team scoring 193 points, securing 1st place among 50+ participants.',
-      'Collaborated in a 4-person team using agile workflows across data acquisition, model building, and final presentation.',
-    ],
-    images: [
-      {
-        src: '/projects/Most_optimal_team.png',
-        alt: 'Optimal F1 fantasy team selection showing 193 total points within $1M budget',
-        label: 'Optimal Team',
-        objectPosition: 'top center',
-      },
-      {
-        src: '/projects/F1_points_driver.png',
-        alt: 'F1 driver points and points-per-cost analysis bar chart',
-        label: 'Driver Analysis',
-        objectPosition: 'top center',
-      },
-    ],
-  },
 ];
 
 export default function WorkSection() {
@@ -123,8 +156,8 @@ export default function WorkSection() {
         <span className="section-num">03 / 04</span>
       </div>
 
-      {PROJECTS.map((project) => (
-        <div key={project.id} className="project-block">
+      {PROJECTS.map((project, index) => (
+        <div key={project.id} className={`project-block${index === 0 ? ' project-block-first' : ''}`}>
           <div className="exp-content-grid" style={{ '--exp-image-gap': '170px' }}>
             <ScrollReveal className="proj-text-col">
               <div className="proj-header-row">

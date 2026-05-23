@@ -78,7 +78,7 @@ export default function GlitchText({
   }, [children, duration, delay]);
 
   return (
-    <Tag ref={ref} className={className}>
+    <Tag ref={ref} className={className} data-text={children}>
       {displayed}
     </Tag>
   );

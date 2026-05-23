@@ -10,11 +10,11 @@ export default function Nav() {
         <a href="mailto:adrit.panday@mail.utoronto.ca" className="nav-link">Contact</a>
       </div>
 
-      <div className="nav-right">
+      {/* <div className="nav-right">
         <a href="mailto:adrit.panday@mail.utoronto.ca" className="nav-cta">
           Let&apos;s work together<span className="plus">+</span>
         </a>
-      </div>
+      </div> */}
     </nav>
   );
 }
