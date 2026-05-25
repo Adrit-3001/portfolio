@@ -858,7 +858,7 @@ h1 {
   }
 
   .polaroid-col {
-    justify-content: flex-start;
+    justify-content: center;
     padding-top: 0;
   }
 
@@ -944,5 +944,58 @@ h1 {
 
   .lightbox-alt {
     font-size: 11px;
+  }
+
+  /* ── HERO: hide face, full-width intro ── */
+  .hero {
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .hero-left {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    padding: 110px 28px 90px;
+    justify-content: flex-start;
+  }
+
+  .hero-right {
+    display: none;
+  }
+
+  h1 {
+    font-size: clamp(40px, 11vw, 60px);
+  }
+
+  .hero-desc {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  .ctas {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  /* ── POLAROIDS: center on mobile ── */
+  .polaroid-col {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ── BOTTOM BAR: tighten on mobile ── */
+  .bottom-bar {
+    padding: 16px 20px;
+  }
+
+  .tech-row {
+    gap: 14px;
+  }
+
+  .tech-item {
+    font-size: 10px;
   }
 }
