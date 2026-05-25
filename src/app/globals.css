@@ -991,6 +991,10 @@ h1 {
     padding: 16px 20px;
   }
 
+  .bottom-label {
+    display: none;
+  }
+
   .tech-row {
     gap: 14px;
   }

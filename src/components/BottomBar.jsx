@@ -4,7 +4,7 @@ export default function BottomBar() {
   return (
     <div className="bottom-bar">
       <div className="bottom-label">
-        Computer Science Specialist<br />University of Toronto Scarborough
+        Computer Science Specialist<br />University of Toronto
       </div>
       <div className="tech-row">
         {TECH.map((t) => (
