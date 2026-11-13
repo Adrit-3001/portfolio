@@ -437,7 +437,7 @@ h1 {
 .exp-content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 48px var(--exp-image-gap, 72px);
+  gap: 96px var(--exp-image-gap, 72px);
   align-items: start;
   width: 100%;
   max-width: 1320px;
@@ -851,6 +851,14 @@ h1 {
 
   .exp-text-col {
     max-width: 100%;
+  }
+
+  .exp-content-grid > .exp-text-col:not(:first-child) {
+    margin-top: 40px;
+  }
+
+  .polaroid-col-empty {
+    display: none;
   }
 
   .exp-role {
