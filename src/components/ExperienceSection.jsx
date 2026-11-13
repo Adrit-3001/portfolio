@@ -16,8 +16,14 @@ const EXPERIENCES = [
       'Developed DB2 unit tests for Cobol mainframe programs, resolved severe errors ahead of PAT deployment, and authored deployment documentation for the Mainframe team, ensuring stable, production-ready releases.',
       'Co-hosted hands-on Builder’s Club sessions as part of a 6-person organizing team, introducing colleagues to emerging technologies such as fruit fly brain simulation, website hacking, and reverse engineering and merging games into new ones.',
     ],
-    // TODO: add TD images under /public/work_experience/
-    images: [],
+    images: [
+      {
+        src: '/work_experience/job_flow.png',
+        alt: 'Job Flow mainframe scheduling atlas: searchable map of jobs, programs, and copybooks across 12 repositories',
+        label: 'Job Flow Atlas',
+        objectPosition: 'top left',
+      },
+    ],
     imagesAriaLabel: 'View TD Bank images',
   },
   {
