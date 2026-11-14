@@ -23,6 +23,12 @@ const EXPERIENCES = [
         label: 'Job Flow Atlas',
         objectPosition: 'top left',
       },
+      {
+        src: '/work_experience/job_flow_dia.png',
+        alt: 'Job dependency graph tracing a mainframe batch job to the jobs that run after it',
+        label: 'Dependency Graph',
+        objectPosition: 'left center',
+      },
     ],
     imagesAriaLabel: 'View TD Bank images',
   },
